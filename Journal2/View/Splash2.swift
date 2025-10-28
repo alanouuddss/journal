@@ -14,7 +14,9 @@ struct Splash2: View {
     var body: some View {
         ZStack {
             if showIntro {
-               // Intro() // بعد 3 ثواني يفتح شاشة اليومية
+                Intro2()
+                
+            // بعد 3 ثواني يفتح شاشة اليومية
             } else {
                 // الخلفية الغامقة المتدرجة
                 LinearGradient(

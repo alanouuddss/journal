@@ -4,7 +4,6 @@
 //
 //  Created by AlAnoud Alsaaid on 01/05/1447 AH.
 //
-
 import SwiftUI
 
 struct Intro2: View {
@@ -16,24 +15,17 @@ struct Intro2: View {
     @State private var editing: Item2? = nil
     @State private var itemToDelete: Item2? = nil
     @State private var showDeleteAlert = false
-    @State private var isRecording = false
 
     private let accent = Color(red: 212/255, green: 200/255, blue: 255/255)
-    private var recorder = AudioRecorder2()
 
     private var displayed: [Item2] {
         var arr = items
         if !search.isEmpty {
-            arr = arr.filter {
-                $0.title.localizedCaseInsensitiveContains(search) ||
-                $0.content.localizedCaseInsensitiveContains(search)
-            }
+            arr = arr.filter { $0.title.localizedCaseInsensitiveContains(search) || $0.content.localizedCaseInsensitiveContains(search) }
         }
         if sortMode == 0 {
-            // المفضلة أولاً ثم التاريخ تصاعدي
             arr.sort { ($0.isBookmarked ? 0:1, $0.date) < ($1.isBookmarked ? 0:1, $1.date) }
         } else {
-            // الأحدث أولاً
             arr.sort { $0.date > $1.date }
         }
         return arr
@@ -43,11 +35,8 @@ struct Intro2: View {
         VStack(spacing: 0) {
             // MARK: Header
             HStack(alignment: .firstTextBaseline) {
-                Text("Journal")
-                    .font(.system(size: 34, weight: .bold))
-
+                Text("Journal").font(.system(size: 34, weight: .bold))
                 Spacer()
-
                 HStack(spacing: 18) {
                     Menu {
                         Picker("Sort", selection: $sortMode) {
@@ -58,10 +47,8 @@ struct Intro2: View {
                         Image(systemName: "line.3.horizontal.decrease")
                             .font(.system(size: 17, weight: .semibold))
                     }
-
                     Button { editing = Item2(title: "", content: "") } label: {
-                        Image(systemName: "plus")
-                            .font(.system(size: 17, weight: .semibold))
+                        Image(systemName: "plus").font(.system(size: 17, weight: .semibold))
                     }
                 }
                 .padding(.horizontal, 14)
@@ -75,9 +62,7 @@ struct Intro2: View {
             // MARK: Empty / List
             if items.isEmpty && search.isEmpty {
                 VStack(spacing: 0) {
-                    Image("Splashpage2")
-                        .resizable().scaledToFit()
-                        .frame(width: 150, height: 150)
+                    Image("Splashpage2").resizable().scaledToFit().frame(width: 150, height: 150)
                     Text("Begin Your Journal")
                         .font(.system(size: 24, weight: .bold))
                         .foregroundColor(accent)
@@ -97,10 +82,7 @@ struct Intro2: View {
                             accent: accent,
                             onBookmark: { toggleBookmark(id: it.id) },
                             onOpen: { editing = it },
-                            onDelete: {
-                                itemToDelete = it
-                                showDeleteAlert = true
-                            }
+                            onDelete: { itemToDelete = it; showDeleteAlert = true }
                         )
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
@@ -111,42 +93,30 @@ struct Intro2: View {
                 .scrollContentBackground(.hidden)
             }
 
-            // MARK: Search Bar + Mic
-            HStack(spacing: 10) {
-                Image(systemName: "magnifyingglass").font(.system(size: 16))
-                TextField("Search", text: $search)
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-
-                Button {
-                    if isRecording {
-                        recorder.stop()
-                        isRecording = false
-                        if let url = recorder.fileURL {
-                            upsert(Item2(title: "Voice Note", content: "", audioURL: url))
-                        }
-                    } else {
-                        do { try recorder.start(); isRecording = true }
-                        catch { print("Recording error:", error) }
-                    }
-                } label: {
-                    Image(systemName: isRecording ? "stop.circle.fill" : "mic.fill")
+            // MARK: Search Bar (with mic icon)
+            VStack(spacing: 6) {
+                HStack(spacing: 10) {
+                    Image(systemName: "magnifyingglass").font(.system(size: 16))
+                    TextField("Search", text: $search)
+                        .textInputAutocapitalization(.never)
+                        .disableAutocorrection(true)
+                    Spacer()
+                    Image(systemName: "mic.fill")
                         .font(.system(size: 18))
-                        .foregroundColor(isRecording ? .red : .primary)
+                        .foregroundColor(.secondary)
                 }
+                .foregroundColor(.primary.opacity(0.9))
+                .frame(height: 44)
+                .padding(.horizontal, 14)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
             }
-            .foregroundColor(.primary.opacity(0.9))
-            .frame(height: 44)
-            .padding(.horizontal, 14)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
             .padding(.horizontal, 20)
             .padding(.bottom, 18)
         }
         .onAppear(perform: load)
         .fullScreenCover(item: $editing) { it in
             Editor2(it: it, accent: accent) { saved in
-                upsert(saved)
-                editing = nil
+                upsert(saved); editing = nil
             } onCancel: { editing = nil }
             .ignoresSafeArea(.keyboard)
         }

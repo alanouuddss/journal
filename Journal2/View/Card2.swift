@@ -35,6 +35,7 @@ struct Card2: View {
             .swipeActions(edge: .trailing) {
                 Button(role: .destructive) { onDelete() } label: {
                     Label("Delete", systemImage: "trash")
+                        .glassEffect()
                 }
             }
 
@@ -45,7 +46,7 @@ struct Card2: View {
                     .padding(10)
                     .background(.ultraThinMaterial, in: Circle())
             }
-            .buttonStyle(.plain)
+            .glassEffect()
             .padding(10)
         }
     }

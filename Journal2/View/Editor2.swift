@@ -4,7 +4,6 @@
 //
 //  Created by AlAnoud Alsaaid on 01/05/1447 AH.
 //
-
 import SwiftUI
 
 struct Editor2: View {
@@ -26,6 +25,7 @@ struct Editor2: View {
                         .foregroundColor(.primary)
                         .padding(10)
                         .background(.ultraThinMaterial, in: Circle())
+                       .glassEffect()
                 }
 
                 Spacer()
@@ -39,7 +39,9 @@ struct Editor2: View {
                         .foregroundColor(.white)
                         .frame(width: 44, height: 44)
                         .background(accent, in: Circle())
+                        .glassEffect()
                 }
+                
                 .disabled(it.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 .opacity(it.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.5 : 1)
             }
@@ -68,7 +70,9 @@ struct Editor2: View {
         .alert("Are you sure you want to discard changes on this journal?",
                isPresented: $showAlert) {
             Button("Discard Changes", role: .destructive) { onCancel() }
+                .glassEffect()
             Button("Keep Editing", role: .cancel) { }
+                .glassEffect()
         }
         .ignoresSafeArea(.keyboard)
     }

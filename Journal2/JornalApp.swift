@@ -12,7 +12,7 @@ struct JournalApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                Splash2() // شاشة البداية
+                Splash2()
             }
         }
     }
